@@ -32,6 +32,7 @@
                     @Html.DisplayFor(modelItem => item.DefaultDays)
                 </td>
                 <td>
+                    <button data-id="@item.Id" class="btn btn-primary allocateBtn" type="button">Allocate Leave</button>
                     <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Id"><i class="fa-regular fa-pen-to-square"></i> </a>
                     <a class="btn btn-info" asp-action="Details" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i> </a>
                     <button data-id="@item.Id" class="btn btn-danger delete" type="button"><i class="fa-solid fa-trash"></i> </button>
@@ -45,27 +46,54 @@
     <input type="hidden" id="leaveTypeId" name="Id" />
 </form>
 
+<form id="allocationForm" asp-action="AllocateLeave">
+    <input type="hidden" id="leaveAllocationId" name="Id" />
+</form>
+
 
 @section Scripts {
     <script>
-        $(function () {
-            $(".table").DataTable();
-            $(".delete").click(function (e) {
-                swal({
-                    title: "Are you sure?",
-                    text: "Are you sure that you want to delete this?",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true
-                }).then((confirm) => {
-                    if (confirm) {
-                        var btn = $(this);
-                        var id = btn.data("id");
-                        $('#leaveTypeId').val(id);
-                        $('#deleteFrom').submit();
-                    }
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.DataTable) {
+                new DataTable('.table');
+            }
+
+            document.querySelectorAll('.delete').forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    swal({
+                        title: "Are you sure?",
+                        text: "Are you sure that you want to delete this?",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true
+                    }).then((confirm) => {
+                        if (confirm) {
+                            document.getElementById('leaveTypeId').value = this.dataset.id;
+                            document.getElementById('deleteForm').submit();
+                        }
+                    });
+                });
+            });
+
+            document.querySelectorAll('.allocateBtn').forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    swal({
+                        title: "Are you sure?",
+                        text: "Are you sure you want to allocate this leave to all employees?",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true
+                    }).then((confirm) => {
+                        if (confirm) {
+                            document.getElementById('leaveAllocationId').value = this.dataset.id;
+                            document.getElementById('allocationForm').submit();
+                        }
+                    });
                 });
             });
         });
+
     </script>
 }
