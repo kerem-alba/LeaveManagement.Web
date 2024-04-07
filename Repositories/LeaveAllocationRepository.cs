@@ -88,5 +88,18 @@ namespace LeaveManagement.Web.Repositories
             }
             await AddRangeAsync(allocations);
         }
+        public async Task<bool> UpdateEmployeeAllocation(LeaveAllocationEditViewModel model)
+        {
+            var leaveAllocation = await GetAsync(model.Id);
+            if (leaveAllocation == null)
+            {
+                return false;
+            }
+            leaveAllocation.Period = model.Period;
+            leaveAllocation.NumberOfDays = model.NumberOfDays;
+            await UpdateAsync(leaveAllocation);
+
+            return true;
+        }
     }
 }
