@@ -22,6 +22,7 @@ namespace LeaveManagement.Web.Data
 
         public DbSet<LeaveType> LeaveTypes { get; set; }
         public DbSet<LeaveAllocation> LeaveAllocations { get; set; }
-        public DbSet<LeaveManagement.Web.Models.LeaveAllocationEditViewModel> LeaveAllocationEditViewModel { get; set; } = default!;
+        public DbSet<LeaveAllocationEditViewModel> LeaveAllocationEditViewModel { get; set; } = default!;
+        public DbSet<LeaveRequest> LeaveRequests { get; set; }
     }
 }
