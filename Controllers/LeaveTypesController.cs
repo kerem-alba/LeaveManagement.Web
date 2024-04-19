@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using LeaveManagement.Web.Data;
+using LeaveManagement.Data;
 using AutoMapper;
-using LeaveManagement.Web.Models;
-using LeaveManagement.Web.Contracts;
+using LeaveManagement.Common.Models;
+using LeaveManagement.Application.Contracts;
 using Microsoft.AspNetCore.Authorization;
-using LeaveManagement.Web.Constants;
+using LeaveManagement.Common.Constants;
+using LeaveManagement.Application.Repositories;
 
 namespace LeaveManagement.Web.Controllers
 {
@@ -82,9 +83,9 @@ namespace LeaveManagement.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, LeaveTypeViewModel leaveTypeModel)
+        public async Task<IActionResult> Edit(int id, LeaveTypeViewModel leaveTypeVievModel)
         {
-            if (id != leaveTypeModel.Id)
+            if (id != leaveTypeVievModel.Id)
             {
                 return NotFound();
             }
@@ -93,12 +94,12 @@ namespace LeaveManagement.Web.Controllers
             {
                 try
                 {
-                    var leaveType = _mapper.Map<LeaveType>(leaveTypeModel);
+                    var leaveType = _mapper.Map<LeaveType>(leaveTypeVievModel);
                     await _leaveTypeRepository.UpdateAsync(leaveType);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!await LeaveTypeExistsAsync(leaveTypeModel.Id))
+                    if (!await _leaveTypeRepository.Exists(leaveTypeVievModel.Id))
                     {
                         return NotFound();
                     }
@@ -109,7 +110,7 @@ namespace LeaveManagement.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(leaveTypeModel);
+            return View(leaveTypeVievModel);
         }
 
         // POST: LeaveTypes/Delete/5
